@@ -1,12 +1,12 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
+ * Sample React Native@0.61.5 Template with Navigation and Redux enabled
+ * https://github.com/sumedhtare/newProject.git
  *
  * @format
  * @flow
  */
 
-import React from 'react';
+import React,{Component} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,100 +15,70 @@ import {
   Text,
   StatusBar,
 } from 'react-native';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {fadeIn} from 'react-navigation-transitions';
+import FirstScreen from './Components/firstscreen'
+import SecondScreen from './Components/secondscreen'
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const bottomScreens ={
+  SecondScreen:{screen:SecondScreen}
+}
+const bottomScreenConfig ={
+ // initialRouteName: 'Feed',
+ activeColor: '#2d2d2d',
+ inactiveColor: 'grey',
+ barStyle: { backgroundColor: '#f8f8f8' },
+ labeled:true,
+ //shifting:true,
+ //animationEnabled:false,
 
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
+ defaultNavigationOptions: ({ navigation }) => ({
+
+  tabBarIcon: ({ focused, horizontal, tintColor }) => {
+    const { routeName } = navigation.state;
+    let iconName;
+    if (routeName == 'SecondScreen') {
+      iconName = 'home';
+    }
+    // You can return any component that you like here!
+    return (
+      // <View style={{backgroundColor:'red'}}>
+       <Icon name={"ios-"+iconName} size={20} color={focused? '#2d2d2d':'grey'} style={{ alignSelf: 'center' }} />
+      //  </View>
+    )
+
+  },
+
+ })
+}
+const BottomNavigator = createMaterialBottomTabNavigator(
+  bottomScreens,
+  bottomScreenConfig
   );
-};
 
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
 
-export default App;
+
+ const stackScreens ={
+  SecondScreen:BottomNavigator,
+  FirstScreen:{screen:FirstScreen},
+  
+ }
+
+ const stackScreensConfig = {
+  transitionConfig: () => fadeIn(),
+  // cardStyle:{backgroundColor:'#f8f8f8'},
+  defaultNavigationOptions: {
+    header: null,
+    gesturesEnabled: false,
+  }
+ }
+
+const AppNavigator = createStackNavigator(
+  stackScreens,
+  stackScreensConfig
+  );
+
+export default createAppContainer(AppNavigator);
